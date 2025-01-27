@@ -37,3 +37,6 @@ db.users.insertMany([
   {email: "jonhDoe@gmail.com"},
   {email: 'janeDoe@gmail.com', balance: 5000}
 ]);
+
+// Read - читання
+db.users.find();
