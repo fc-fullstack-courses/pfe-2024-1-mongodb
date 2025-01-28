@@ -183,6 +183,11 @@ db.users.find(
   }
 );
 
+// фільтрація по ObjectId
+db.users.findOne({
+  _id: new ObjectId('6797d3cb3140351239fd57e1')
+})
+
 db.inventory.insertMany([
   {
     item: 'canvas',
