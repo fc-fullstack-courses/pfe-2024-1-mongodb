@@ -153,3 +153,27 @@ db.users.find({}, {
   email: 1,
   _id: 0
 });
+
+// D - delete 
+
+// видалити багато записів
+
+// видалити всі записи з коллекції
+// DELETE FROM inventory;
+db.inventory.deleteMany({});
+
+db.users.deleteMany({
+  email: {
+    $exists: false
+  }
+});
+
+// видалити один запис
+db.users.deleteOne({});
+
+// або
+db.users.findOneAndDelete({});
+
+// видалити всю колекцію
+// DROP TABLE inventory;
+db.inventory.drop();
