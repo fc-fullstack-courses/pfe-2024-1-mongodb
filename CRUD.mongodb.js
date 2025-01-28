@@ -124,3 +124,32 @@ db.users.find({
 db.inventory.find({
   "size.uom": 'cm'
 });
+
+// Проекція
+/*
+  значення:  
+    1 або true - поле буде включено до результату (include)
+    0 або false - поле буде виключено з результатів (exclude)
+*/
+// SELECT item, status FROM inventory;
+db.inventory.find({}, {
+  item: 1,
+  status: 1
+});
+
+// всі користувачі без паролів
+db.users.find({}, {
+  password: 0
+});
+
+// користувачі з емейлами але без прізвищ ПОМИЛКА
+db.users.find({}, {
+  email: 1,
+  lastName: 0
+});
+
+// 0 та 1 у проекції поєднуються тільки якщо 0 прибирати _id
+db.users.find({}, {
+  email: 1,
+  _id: 0
+});
