@@ -88,3 +88,40 @@ const badPC = {
 }
 
 db.pcCases.insertOne(badPC);
+
+// зміна існуючої валідації / додавання валідації до існуючої коллекції
+db.runCommand({
+  collMod: 'users',
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['email'],
+      properties: {
+        fullName: {
+          bsonType: 'string'
+        },
+        email: {
+          bsonType: 'string',
+          pattern: '[A-Za-z0-9]{2,64}@[A-Za-z]{3,32}\.[A-Za-z]{2,12}'
+        },
+        birthday: {
+          bsonType: 'date'
+        }
+      }
+    }
+  }
+});
+
+db.users.insertOne({ email: 'test@test.test' });
+
+// якщо команда зверху не виконується
+use('admin');
+
+db.grantRolesToUser(
+  // ім'я користувача у БД
+  'admin',
+  [
+    // { role : "dbAdmin", db : "PFE-2024-1-lessons" }
+    "dbAdminAnyDatabase"
+  ]
+);
