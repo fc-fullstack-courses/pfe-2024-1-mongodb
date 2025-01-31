@@ -34,7 +34,7 @@ db.createCollection('pcCases', {
             },
             ram: {
               bsonType: 'number',
-              minimum: 0
+              minimum: 0,
             },
             storage: {
               bsonType: 'array',
@@ -44,13 +44,13 @@ db.createCollection('pcCases', {
                 bsonType: 'object',
                 properties: {
                   type: {
-                    bsonType: 'string'
+                    bsonType: 'string',
                   },
                   diskSpace: {
-                    bsonType: 'number'
-                  }
-                }
-              }
+                    bsonType: 'number',
+                  },
+                },
+              },
             },
           },
         },
@@ -68,12 +68,12 @@ const goodPC = {
     storage: [
       {
         type: 'SSD',
-        diskSpace: 500
+        diskSpace: 500,
       },
       {
         type: 'HDD',
-        diskSpace: 2048
-      }
+        diskSpace: 2048,
+      },
     ],
   },
 };
@@ -83,9 +83,9 @@ db.pcCases.insertOne(goodPC);
 const badPC = {
   name: 1234,
   isAvaliable: {
-    test: '12345'
+    test: '12345',
   },
-}
+};
 
 db.pcCases.insertOne(badPC);
 
@@ -98,18 +98,18 @@ db.runCommand({
       required: ['email'],
       properties: {
         fullName: {
-          bsonType: 'string'
+          bsonType: 'string',
         },
         email: {
           bsonType: 'string',
-          pattern: '[A-Za-z0-9]{2,64}@[A-Za-z]{3,32}\.[A-Za-z]{2,12}'
+          pattern: '[A-Za-z0-9]{2,64}@[A-Za-z]{3,32}.[A-Za-z]{2,12}',
         },
         birthday: {
-          bsonType: 'date'
-        }
-      }
-    }
-  }
+          bsonType: 'date',
+        },
+      },
+    },
+  },
 });
 
 db.users.insertOne({ email: 'test@test.test' });
@@ -122,7 +122,7 @@ db.grantRolesToUser(
   'admin',
   [
     // { role : "dbAdmin", db : "PFE-2024-1-lessons" }
-    "dbAdminAnyDatabase"
+    'dbAdminAnyDatabase',
   ]
 );
 
@@ -143,3 +143,117 @@ db.grantRolesToUser(
       - стандарти зв'язку
       - серійний номер
 */
+
+db.createCollection('phones', {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['name', 'price', 'connectionStandards', 'serialNumber'],
+      properties: {
+        name: {
+          bsonType: 'string',
+          description: 'Phone Name is a required string type field.',
+        },
+        price: {
+          bsonType: 'number',
+          minimum: 0,
+          description:
+            'Phone price is a required number type field, not less than 0',
+        },
+        color: {
+          bsonType: 'string',
+          description: 'Phone color is an optional string type field',
+        },
+        isUsed: {
+          bsonType: 'bool',
+          description: 'Is the phone used - optional Bool type',
+        },
+        dimensions: {
+          bsonType: 'object',
+          required: ['thickness', 'height', 'length'],
+          properties: {
+            thickness: {
+              bsonType: 'object',
+              required: ['value', 'uom'],
+              properties: {
+                value: {
+                  bsonType: 'number',
+                  minimum: 0,
+                  description:
+                    'Phone thickness is a required number type field, not less than 0',
+                },
+                uom: {
+                  bsonType: 'string',
+                  description: 'Unit of meashure for specific dimension value',
+                },
+              },
+            },
+            thickness: {
+              bsonType: 'object',
+              required: ['value', 'uom'],
+              properties: {
+                value: {
+                  bsonType: 'number',
+                  minimum: 0,
+                  description:
+                    'Phone length is a required number type field, not less than 0',
+                },
+                uom: {
+                  bsonType: 'string',
+                  description: 'Unit of meashure for specific dimension value',
+                },
+              },
+            },
+            height: {
+              bsonType: 'object',
+              required: ['value', 'uom'],
+              properties: {
+                value: {
+                  bsonType: 'number',
+                  minimum: 0,
+                  description:
+                    'Phone height is a required number type field, not less than 0',
+                },
+                uom: {
+                  bsonType: 'string',
+                  description: 'Unit of meashure for specific dimension value',
+                },
+              },
+              bsonType: 'object',
+              properties: {
+                value: {
+                  bsonType: 'number',
+                  minimum: 0,
+                  description:
+                    'Phone thickness is a required number type field, not less than 0',
+                },
+                uom: {
+                  bsonType: 'string',
+                  description: 'Unit of meashure for specific dimension value',
+                },
+              },
+            },
+          },
+        },
+        connectionStandards: {
+          bsonType: 'array',
+          minItems: 1,
+          uniqueItems: true,
+          items: {
+            bsonType: 'string',
+            enum: ['2G', '3G', '4G', 'LTE', '5G', 'WiFi', 'BlueTooth'],
+            description:
+              'Communication Standards - A Required Array type field, minimum one item',
+          },
+        },
+        serialNumber: {
+          bsonType: 'string',
+          description:
+            'Serial Number is a required string type field unique for each phone',
+        },
+      },
+    },
+  },
+});
+
+db.phones.createIndex({ serialNumber: 1 }, { unique: true });
