@@ -6,9 +6,12 @@ const EMAIL_VALIDATION_SCHEMA = yup.string().email().required();
 const manufacturerSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Manufacturer name is required.'],
     unique: true,
-    match: /[A-Za-z]\w+/,
+    match: [
+      /[A-Za-z]\w+/,
+      'Manufacturer name must start from letter and can only contain letters and numbers. No space allowed',
+    ],
   },
   estimatedValue: {
     type: Number,
@@ -20,12 +23,16 @@ const manufacturerSchema = new Schema({
   },
   foundingDate: {
     type: Date,
-    min: new Date(1900, 0, 1),
+    min: [new Date(1900, 0, 1), 'We only accept manufacturer founding date starting from 1900 year.'],
   },
   address: {
     country: {
       type: String,
-      enum: ['Ukraine', 'United Kingdom', 'Norway', 'Sweden', 'Denmark'],
+      // enum: ['Ukraine', 'United Kingdom', 'Norway', 'Sweden', 'Denmark'],
+      enum: {
+        values: ['Ukraine', 'United Kingdom', 'Norway', 'Sweden', 'Denmark'],
+        message: '{VALUE} is not valid country' // {VALUE} заміняється на якусь конкретну країну яку валідували
+      }
     },
     city: {
       type: String,
@@ -46,6 +53,7 @@ const manufacturerSchema = new Schema({
           validate: {
             validator: async (emailStr) =>
               EMAIL_VALIDATION_SCHEMA.isValid(emailStr),
+            message: (props) => `${props.value} is not valid email`,
           },
         },
       },
