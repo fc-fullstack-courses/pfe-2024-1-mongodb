@@ -1,8 +1,19 @@
+const { Manufacturer } = require('../models');
+
 module.exports.createManufacturer = async (req, res, next) => {
   try {
     const { body } = req;
 
-    res.status(201).send({ data: 'Manufacturer Created' });
+    // створення 1 екземпляру
+    const manufacturer = await Manufacturer.create(body);
+
+    // створення багатьох екземплярів
+    // const manufacturers = await Manufacturer.insertMany([
+    //   body,
+    //   ...
+    // ])
+
+    res.status(201).send({ data: manufacturer });
   } catch (error) {
     next(error);
   }
@@ -14,7 +25,13 @@ module.exports.getManufacturer = async (req, res, next) => {
       params: { manufacturerId },
     } = req;
 
-    res.status(200).send({ data: 'Manufacturer Found.' });
+    // const [manufacturer] = await Manufacturer.find({ _id: manufacturerId });
+
+    // const manufacturer = await Manufacturer.findOne({ _id: manufacturerId });
+
+    const manufacturer = await Manufacturer.findById(manufacturerId);
+
+    res.status(200).send({ data: manufacturer });
   } catch (error) {
     next(error);
   }
@@ -24,7 +41,9 @@ module.exports.getManufacturers = async (req, res, next) => {
   try {
     const { query } = req;
 
-    res.status(200).send({ data: 'Manufacturers Found.' });
+    const manufacturers = await Manufacturer.find();
+
+    res.status(200).send({ data: manufacturers });
   } catch (error) {
     next(error);
   }
@@ -37,7 +56,15 @@ module.exports.updateManufacturer = async (req, res, next) => {
       params: { manufacturerId },
     } = req;
 
-    res.status(200).send({ data: 'Manufacturer Updated' });
+    // const manufacturer = await Manufacturer.findOneAndUpdate({_id: manufacturerId}, body, {
+    //   new: true // змушує БД повертати дані після оновлення
+    // });
+
+    const manufacturer = await Manufacturer.findByIdAndUpdate(manufacturerId, body, {
+      new: true // змушує БД повертати дані після оновлення
+    });
+
+    res.status(200).send({ data: manufacturer });
   } catch (error) {
     next(error);
   }
@@ -49,17 +76,9 @@ module.exports.deleteManufacturer = async (req, res, next) => {
       params: { manufacturerId },
     } = req;
 
-    res.status(200).send({ data: 'Manufacturer Deleted' });
-  } catch (error) {
-    next(error);
-  }
-};
+    const manufacturer = await Manufacturer.findByIdAndDelete(manufacturerId)
 
-module.exports.createManufacturer = async (req, res, next) => {
-  try {
-    const { body } = req;
-
-    res.status(201).send({ data: 'Manufacturer Created' });
+    res.status(200).send({ data: manufacturer });
   } catch (error) {
     next(error);
   }

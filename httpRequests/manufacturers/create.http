@@ -1,0 +1,14 @@
+POST http://localhost:5000/manufacturers
+Content-Type: application/json
+
+{
+  "name" : "teasds13232",
+  "estimatedValue": 1520000,
+  "isPrivate" : true,
+  "foundingDate": "1995-05-07",
+  "address": {
+    "country": "Ukraine",
+    "city": "Kyiv",
+    "postalCode": 69000
+  }
+}
