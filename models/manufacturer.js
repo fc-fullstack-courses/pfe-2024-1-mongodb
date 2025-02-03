@@ -17,9 +17,11 @@ const manufacturerSchema = new Schema({
     type: Number,
     min: 0,
     max: 900000000,
+    default: 1000000
   },
   isPrivate: {
     type: Boolean,
+    default: false
   },
   foundingDate: {
     type: Date,
