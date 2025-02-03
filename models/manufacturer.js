@@ -61,4 +61,6 @@ const manufacturerSchema = new Schema({
       },
     ],
   },
+}, {
+  timestamps: true
 });
