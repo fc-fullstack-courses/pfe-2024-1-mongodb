@@ -29,7 +29,24 @@ module.exports.getManufacturer = async (req, res, next) => {
 
     // const manufacturer = await Manufacturer.findOne({ _id: manufacturerId });
 
-    const manufacturer = await Manufacturer.findById(manufacturerId);
+    const manufacturer = await Manufacturer.findById(manufacturerId, '-__v')
+    // .select(
+    //   // залишити тількі певні рядки
+    //   // 'name foundingDate estimatedValue'
+    //   // {
+    //   //   name: 1,
+    //   //   foundingDate: 1,
+    //   //   estimatedValue: 1
+    //   // },
+    //   // ['name','foundingDate', 'estimatedValue']
+    //   // прибрати конкретні рядки
+    //   // '-__v'
+    //   // {
+    //   //   __v: 0,
+    //   //   estimatedValue: 0
+    //   // },
+    //  ['-__v', '-name', '-address']
+    // );
 
     res.status(200).send({ data: manufacturer });
   } catch (error) {
@@ -62,7 +79,7 @@ module.exports.updateManufacturer = async (req, res, next) => {
 
     const manufacturer = await Manufacturer.findByIdAndUpdate(manufacturerId, body, {
       new: true // змушує БД повертати дані після оновлення
-    });
+    }).select('-__v');
 
     res.status(200).send({ data: manufacturer });
   } catch (error) {
@@ -76,7 +93,8 @@ module.exports.deleteManufacturer = async (req, res, next) => {
       params: { manufacturerId },
     } = req;
 
-    const manufacturer = await Manufacturer.findByIdAndDelete(manufacturerId)
+    const manufacturer = await Manufacturer.findByIdAndDelete(manufacturerId, {projection: '-__v'})
+    .select('-__v');
 
     res.status(200).send({ data: manufacturer });
   } catch (error) {
