@@ -1,4 +1,7 @@
 const { Schema } = require('mongoose');
+const yup = require('yup');
+
+const EMAIL_VALIDATION_SCHEMA = yup.string().email().required();
 
 const manufacturerSchema = new Schema({
   name: {
@@ -40,6 +43,10 @@ const manufacturerSchema = new Schema({
         email: {
           type: String,
           unique: true,
+          validate: {
+            validator: async (emailStr) =>
+              EMAIL_VALIDATION_SCHEMA.isValid(emailStr),
+          },
         },
       },
     ],
