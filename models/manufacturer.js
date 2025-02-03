@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const yup = require('yup');
 
 const EMAIL_VALIDATION_SCHEMA = yup.string().email().required();
@@ -64,3 +64,7 @@ const manufacturerSchema = new Schema({
 }, {
   timestamps: true
 });
+
+const Manufacturer = model('Manufacturer', manufacturerSchema);
+
+module.exports = Manufacturer;
