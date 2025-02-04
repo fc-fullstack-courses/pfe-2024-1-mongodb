@@ -1,5 +1,7 @@
 const manufacturerRouter = require('express').Router();
+const productsRouter = require('./productsRouter');
 const ManufacturersController = require('../controllers/manufacturersController');
+const { findManufacturer } = require('../middlewares/manufacturersMW');
 
 // manufacturerRouter.post('/', ManufacturersController.createManufacturer);
 // manufacturerRouter.get('/', ManufacturersController.getManufacturers);
@@ -25,5 +27,7 @@ manufacturerRouter
   .get(ManufacturersController.getManufacturer)
   .put(ManufacturersController.updateManufacturer)
   .delete(ManufacturersController.deleteManufacturer);
+
+manufacturerRouter.use('/:manufacturerId/products', findManufacturer, productsRouter);
 
 module.exports = manufacturerRouter;
