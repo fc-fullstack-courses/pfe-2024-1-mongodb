@@ -113,3 +113,30 @@ module.exports.updateProduct = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.deleteProduct = async (req, res, next) => {
+  try {
+    const {
+      params: { productId },
+    } = req;
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if(!deletedProduct) {
+      throw createError(404, 'Product does not exist.');
+    }
+
+    await Manufacturer.updateOne(
+      { _id: deletedProduct.manufacturer },
+      {
+        $pull: {
+          products: deletedProduct._id,
+        },
+      }
+    );
+
+    res.send({ data: deletedProduct });
+  } catch (error) {
+    next(error);
+  }
+};

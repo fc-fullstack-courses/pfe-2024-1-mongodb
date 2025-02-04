@@ -8,5 +8,6 @@ rootRouter.route('/products').get(ProductController.getAllProducts);
 
 rootRouter.get('/products/:productId', ProductController.getProduct);
 rootRouter.put('/products/:productId', ProductController.updateProduct);
+rootRouter.delete('/products/:productId', ProductController.deleteProduct);
 
 module.exports = rootRouter;
