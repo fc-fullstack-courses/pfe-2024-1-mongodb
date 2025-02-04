@@ -1,0 +1,7 @@
+PUT http://localhost:5000/products/67a246e9fc7eff58e4e5199e
+Content-Type: application/json
+
+{
+  "quantity": 2000000,
+  "manufacturer": "67a2394815f98c4cb56889b3"
+}

@@ -7,5 +7,6 @@ rootRouter.use('/manufacturers', manufacturerRouter);
 rootRouter.route('/products').get(ProductController.getAllProducts);
 
 rootRouter.get('/products/:productId', ProductController.getProduct);
+rootRouter.put('/products/:productId', ProductController.updateProduct);
 
 module.exports = rootRouter;

@@ -1,4 +1,5 @@
-const { Product } = require('../models');
+const createError = require('http-errors');
+const { Product, Manufacturer } = require('../models');
 
 module.exports.createProduct = async (req, res, next) => {
   try {
@@ -57,6 +58,57 @@ module.exports.getProduct = async (req, res, next) => {
     );
 
     res.send({ data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.updateProduct = async (req, res, next) => {
+  try {
+    const {
+      params: { productId },
+      body,
+    } = req;
+
+    // 1. якщо ми оновлюємо виробника, чи існує новий виробник
+    if (body.manufacturer) {
+      const newManufacturer = await Manufacturer.findById(body.manufacturer);
+
+      if (!newManufacturer) {
+        throw createError(404, 'Manufacturer doesnt exist.');
+      }
+    }
+
+    // 2. оновити продукт
+    const product = await Product.findByIdAndUpdate(productId, body);
+
+    // 3. за потреби оновити дані у нового та старого виробника
+    if (body.manufacturer) {
+      // 3.1 старому виробнику треба буде видали продукт з масиву
+      await Manufacturer.updateOne(
+        { _id: product.manufacturer },
+        {
+          $pull: {
+            products: product._id,
+          },
+        }
+      );
+
+      // 3.2 новому виробнико його треба буде додати до масиву
+      await Manufacturer.updateOne(
+        { _id: body.manufacturer },
+        {
+          $push: { products: product._id },
+        }
+      );
+    }
+
+    // 4. повернути оновлений продукт
+    const updatedProduct = await Product.findById(productId, '-__v').populate(
+      'manufacturer'
+    );
+
+    res.send({ data: updatedProduct });
   } catch (error) {
     next(error);
   }
