@@ -2,10 +2,31 @@ const { Manufacturer } = require('../models');
 
 module.exports.createManufacturer = async (req, res, next) => {
   try {
-    const { body } = req;
+    const {
+      body: {
+        address: { offices, ...restAddress },
+        ...manufacturerDataWithoutAddress
+      },
+    } = req;
+
+
 
     // створення 1 екземпляру
-    const manufacturer = await Manufacturer.create(body);
+    // const manufacturer = await Manufacturer.create({
+    //   ...manufacturerDataWithoutAddress,
+    //   ...restAddress
+    // });
+
+    const manufacturer = new Manufacturer({
+      ...manufacturerDataWithoutAddress,
+      ...restAddress
+    });
+
+    if(offices && Array.isArray(offices) && offices.length > 0) {
+      manufacturer.address.offices.push(...offices);
+    }
+
+    await manufacturer.save();
 
     // створення багатьох екземплярів
     // const manufacturers = await Manufacturer.insertMany([
@@ -29,7 +50,7 @@ module.exports.getManufacturer = async (req, res, next) => {
 
     // const manufacturer = await Manufacturer.findOne({ _id: manufacturerId });
 
-    const manufacturer = await Manufacturer.findById(manufacturerId, '-__v')
+    const manufacturer = await Manufacturer.findById(manufacturerId, '-__v');
     // .select(
     //   // залишити тількі певні рядки
     //   // 'name foundingDate estimatedValue'
@@ -77,9 +98,13 @@ module.exports.updateManufacturer = async (req, res, next) => {
     //   new: true // змушує БД повертати дані після оновлення
     // });
 
-    const manufacturer = await Manufacturer.findByIdAndUpdate(manufacturerId, body, {
-      new: true // змушує БД повертати дані після оновлення
-    }).select('-__v');
+    const manufacturer = await Manufacturer.findByIdAndUpdate(
+      manufacturerId,
+      body,
+      {
+        new: true, // змушує БД повертати дані після оновлення
+      }
+    ).select('-__v');
 
     res.status(200).send({ data: manufacturer });
   } catch (error) {
@@ -93,8 +118,9 @@ module.exports.deleteManufacturer = async (req, res, next) => {
       params: { manufacturerId },
     } = req;
 
-    const manufacturer = await Manufacturer.findByIdAndDelete(manufacturerId, {projection: '-__v'})
-    .select('-__v');
+    const manufacturer = await Manufacturer.findByIdAndDelete(manufacturerId, {
+      projection: '-__v',
+    }).select('-__v');
 
     res.status(200).send({ data: manufacturer });
   } catch (error) {

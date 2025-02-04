@@ -44,22 +44,22 @@ const manufacturerSchema = new Schema({
     postalCode: {
       type: Number,
     },
-    // offices: [
-    //   {
-    //     phone: {
-    //       type: String,
-    //     },
-    //     email: {
-    //       type: String,
-    //       unique: true,
-    //       validate: {
-    //         validator: async (emailStr) =>
-    //           EMAIL_VALIDATION_SCHEMA.isValid(emailStr),
-    //         message: (props) => `${props.value} is not valid email`,
-    //       },
-    //     },
-    //   },
-    // ],
+    offices: [
+      {
+        phone: {
+          type: String,
+        },
+        email: {
+          type: String,
+          unique: true,
+          validate: {
+            validator: async (emailStr) =>
+              EMAIL_VALIDATION_SCHEMA.isValid(emailStr),
+            message: (props) => `${props.value} is not valid email`,
+          },
+        },
+      },
+    ],
   },
 }, {
   timestamps: true
