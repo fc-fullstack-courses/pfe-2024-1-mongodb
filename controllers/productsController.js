@@ -24,7 +24,16 @@ module.exports.getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find({})
       .select('-__v')
-      .populate('manufacturer');
+      // .populate('manufacturer', '-__v -products');
+      .populate({
+        path: 'manufacturer', // яке поле популейтити
+        // select: '-__v -products',
+        // select: ['-__v', '-products'],
+        select: {
+          __v: 0,
+          products: 0
+        },
+      });
 
     res.send({ data: products });
   } catch (error) {
