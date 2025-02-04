@@ -25,7 +25,8 @@ module.exports.createProduct = async (req, res, next) => {
 module.exports.getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find({})
-      .select('-__v');
+      .select('-__v')
+      .populate('manufacturer');
 
     res.send({ data: products });
   } catch (error) {

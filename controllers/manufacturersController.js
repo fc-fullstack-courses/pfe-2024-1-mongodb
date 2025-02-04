@@ -50,7 +50,7 @@ module.exports.getManufacturer = async (req, res, next) => {
 
     // const manufacturer = await Manufacturer.findOne({ _id: manufacturerId });
 
-    const manufacturer = await Manufacturer.findById(manufacturerId, '-__v');
+    const manufacturer = await Manufacturer.findById(manufacturerId, '-__v').populate('products');
     // .select(
     //   // залишити тількі певні рядки
     //   // 'name foundingDate estimatedValue'
